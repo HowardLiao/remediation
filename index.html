@@ -91,9 +91,9 @@
         <a href="#cost-section" class="flex items-center gap-3 bg-gradient-to-r from-emerald-950/80 to-gray-900 border border-emerald-500/40 p-3.5 rounded-2xl hover:border-emerald-400 transition cursor-pointer">
           <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-lg">💰</div>
           <div>
-            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">每月維運成本 (美金/台幣雙幣對照)</div>
-            <div class="text-base font-black text-white">$10,000 ~ $21,800 <span class="text-xs text-gray-400 font-normal">USD</span></div>
-            <div class="text-[11px] text-amber-300 font-bold">約 NT$ 317,000 ~ 690,960 / 月 ➔ <span class="text-emerald-400 underline">查看精算表</span></div>
+            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">每月全平台綜合營運總成本 (外包 + 自主基建)</div>
+            <div class="text-base font-black text-amber-300">NT$ 1,317,000 ~ 1,690,960 <span class="text-xs text-gray-400 font-normal">/ 月</span></div>
+            <div class="text-[11px] text-gray-400">約 $41,546 ~ $53,346 USD (含外包 NT$100萬) ➔ <span class="text-emerald-400 underline">查看精算</span></div>
           </div>
         </a>
 
@@ -822,40 +822,51 @@
         </div>
       </div>
 
-      <!-- Cost Cards Overview -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+      <!-- Cost Cards Overview (4 Pillars including Outsourcing) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gray-900/90 border border-amber-500/40 p-4 rounded-xl border-l-4 border-l-amber-500">
+          <div class="text-[11px] text-amber-400 uppercase font-bold">1. 平台系統外包底費</div>
+          <div class="text-2xl font-black text-white mt-1">NT$ 1,000,000</div>
+          <div class="text-xs font-bold text-amber-300 mt-0.5">約 $31,546 USD / 月</div>
+          <div class="text-[11px] text-gray-400 mt-1">白標包網套版系統租賃、遊戲聚合底座與維護</div>
+        </div>
         <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl">
-          <div class="text-[11px] text-gray-400 uppercase font-semibold">外牆邊緣與安全防護月費</div>
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">2. 外牆邊緣安全防護</div>
           <div class="text-2xl font-black text-blue-400 mt-1" id="costEdge">$3,500 <span class="text-xs font-normal text-gray-400">USD</span></div>
           <div class="text-xs font-bold text-amber-300 mt-0.5" id="costEdgeTWD">約 NT$ 110,950 / 月</div>
-          <div class="text-[11px] text-gray-500 mt-1">Cloudflare Enterprise + Magic Transit + Bot Mgmt</div>
+          <div class="text-[11px] text-gray-500 mt-1">Cloudflare Enterprise + Magic Transit + WAF</div>
         </div>
         <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl">
-          <div class="text-[11px] text-gray-400 uppercase font-semibold">屋內軟體授權與風控服務</div>
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">3. 屋內身分與風控服務</div>
           <div class="text-2xl font-black text-amber-400 mt-1" id="costSoftware">$2,700 <span class="text-xs font-normal text-gray-400">USD</span></div>
           <div class="text-xs font-bold text-amber-300 mt-0.5" id="costSoftwareTWD">約 NT$ 85,590 / 月</div>
-          <div class="text-[11px] text-gray-500 mt-1">Okta IAM, Teleport 堡壘機, Fingerprint Pro, 商戶固定維護</div>
+          <div class="text-[11px] text-gray-500 mt-1">Okta IAM, Teleport 堡壘機, Fingerprint Pro</div>
         </div>
         <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl border-l-4 border-l-emerald-500">
-          <div class="text-[11px] text-gray-400 uppercase font-semibold">雲端基礎設施 (AWS / 跨雲)</div>
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">4. 雲端基礎設施 (AWS/跨雲)</div>
           <div class="text-2xl font-black text-emerald-400 mt-1" id="costCloud">$3,800 <span class="text-xs font-normal text-gray-400">USD</span></div>
           <div class="text-xs font-bold text-amber-300 mt-0.5" id="costCloudTWD">約 NT$ 120,460 / 月</div>
-          <div class="text-[11px] text-gray-500 mt-1">EKS 容器群, Aurora DB, MSK Kafka, Redis, 出網流量</div>
+          <div class="text-[11px] text-gray-500 mt-1">EKS 容器群, Aurora DB, MSK Kafka, Redis, 頻寬</div>
         </div>
       </div>
 
       <!-- Total Cost Highlight Bar -->
-      <div class="p-5 rounded-xl bg-gradient-to-r from-emerald-950/60 via-gray-900 to-amber-950/40 border border-emerald-500/40 flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xl">Σ</div>
+      <div class="p-5 rounded-xl bg-gradient-to-r from-emerald-950/70 via-gray-900 to-amber-950/50 border border-amber-500/40 flex flex-col lg:flex-row items-center justify-between gap-6 mb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-2xl border border-amber-500/30">Σ</div>
           <div>
-            <div class="text-sm font-black text-gray-200">總體每月固定維運預算（Monthly TCO）</div>
-            <div class="text-xs text-gray-400 mt-0.5" id="costTierDesc">適用於日活躍玩家 10,000~30,000 人、注單峰值 1,500 TPS</div>
+            <div class="text-base font-black text-white flex items-center gap-2">
+              每月全平台綜合營運總成本（Monthly Grand Total TCO）
+              <span class="text-[11px] font-normal px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">含外包 NT$ 100 萬/月</span>
+            </div>
+            <div class="text-xs text-gray-400 mt-1" id="costTierDesc">
+              平台外包底費 NT$ 1,000,000 + 自主技術防禦與雲端基建 NT$ 317,000（日活 10k~30k, 1,500 TPS）
+            </div>
           </div>
         </div>
         <div class="text-right">
-          <div class="text-3xl font-black text-emerald-400" id="costTotalUSD">$10,000 <span class="text-base font-semibold text-gray-300">USD / 月</span></div>
-          <div class="text-base font-black text-amber-300 mt-0.5">約 <span id="costTotalTWD">NT$ 317,000</span> / 月 <span class="text-xs font-normal text-gray-400">(約 350,000 THB)</span></div>
+          <div class="text-3xl lg:text-4xl font-black text-amber-400" id="costGrandTotalTWD">NT$ 1,317,000 <span class="text-base font-semibold text-gray-300">/ 月</span></div>
+          <div class="text-sm font-bold text-emerald-400 mt-0.5">約 <span id="costGrandTotalUSD">$41,546</span> USD / 月 <span class="text-xs font-normal text-gray-400">(折合約 1,460,000 THB)</span></div>
         </div>
       </div>
 
@@ -866,12 +877,26 @@
             <tr class="border-b border-gray-800 text-gray-400 bg-gray-950/60">
               <th class="py-3 px-4">預算類別</th>
               <th class="py-3 px-4">服務項目 / 軟體組件</th>
-              <th class="py-3 px-4">計費模式與規格</th>
+              <th class="py-3 px-4">計費模式與規格說明</th>
               <th class="py-3 px-4 text-emerald-400 text-right">成長版月費 (美金 / 台幣)</th>
               <th class="py-3 px-4 text-amber-400 text-right">旗艦雙活版月費 (美金 / 台幣)</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-800 text-gray-300" id="costTableBody">
+            <!-- Outsource Row -->
+            <tr class="bg-amber-950/20 border-b border-amber-500/20">
+              <td class="py-3.5 px-4 font-bold text-amber-400">平台系統外包</td>
+              <td class="py-3.5 px-4 font-black text-white">白標包網套版系統外包月費 (Turnkey Fee)</td>
+              <td class="py-3.5 px-4 text-gray-300 font-medium">包網總控系統租賃、20+ 遊戲 API 底層聚合維護、基礎金流接口維運（固定月費約 NT$ 100 萬）</td>
+              <td class="py-3.5 px-4 text-right">
+                <div class="font-black text-amber-300 text-sm">NT$ 1,000,000</div>
+                <div class="text-[11px] text-gray-400 font-medium">約 $31,546 USD</div>
+              </td>
+              <td class="py-3.5 px-4 text-right">
+                <div class="font-black text-amber-300 text-sm">NT$ 1,000,000</div>
+                <div class="text-[11px] text-gray-400 font-medium">約 $31,546 USD</div>
+              </td>
+            </tr>
             <tr>
               <td class="py-3 px-4 font-bold text-blue-400" rowspan="2">外牆邊緣安全</td>
               <td class="py-3 px-4 font-semibold text-white">Cloudflare Enterprise 旗艦防護</td>
@@ -1051,15 +1076,31 @@
             </tr>
           </tbody>
           <tfoot>
-            <tr class="border-t-2 border-emerald-500 text-sm font-black bg-emerald-950/40">
-              <td colspan="3" class="py-3.5 px-4 text-white">合計每月固定支出估算 (Monthly Total)</td>
-              <td class="py-3.5 px-4 text-right">
-                <div class="text-base font-black text-emerald-400">$10,000 <span class="text-xs text-gray-400">USD/月</span></div>
-                <div class="text-xs font-bold text-amber-300">NT$ 317,000 / 月</div>
+            <!-- Subtotal Row -->
+            <tr class="border-t-2 border-gray-700 text-xs font-bold bg-gray-900/80">
+              <td colspan="3" class="py-3 px-4 text-gray-300">小計：我司自主技術防禦與雲端基建維運 (Subtotal)</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$10,000 <span class="text-[10px] text-gray-400">USD/月</span></div>
+                <div class="text-[11px] text-gray-300">NT$ 317,000 / 月</div>
               </td>
-              <td class="py-3.5 px-4 text-right">
-                <div class="text-base font-black text-amber-400">$21,800 <span class="text-xs text-gray-400">USD/月</span></div>
-                <div class="text-xs font-bold text-amber-300">NT$ 690,960 / 月</div>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$21,800 <span class="text-[10px] text-gray-400">USD/月</span></div>
+                <div class="text-[11px] text-gray-300">NT$ 690,960 / 月</div>
+              </td>
+            </tr>
+            <!-- Grand Total Row -->
+            <tr class="border-t-2 border-amber-500 text-sm font-black bg-amber-950/40">
+              <td colspan="3" class="py-4 px-4 text-white">
+                <div class="text-base font-black text-amber-300">★ 每月全平台綜合營運總成本 (Grand Total: 外包 + 自主基建)</div>
+                <div class="text-[11px] text-gray-400 font-normal">包含外包租賃 NT$ 1,000,000 + 自主多通道金流/SAGA/風控/雲端基礎設施</div>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <div class="text-lg font-black text-amber-300">NT$ 1,317,000 <span class="text-xs text-gray-400">/ 月</span></div>
+                <div class="text-xs font-bold text-emerald-400">約 $41,546 USD / 月</div>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <div class="text-lg font-black text-amber-300">NT$ 1,690,960 <span class="text-xs text-gray-400">/ 月</span></div>
+                <div class="text-xs font-bold text-emerald-400">約 $53,346 USD / 月</div>
               </td>
             </tr>
           </tfoot>
@@ -1237,6 +1278,9 @@
       const costTotalUSD = document.getElementById('costTotalUSD');
       const costTotalTWD = document.getElementById('costTotalTWD');
 
+      const costGrandTotalTWD = document.getElementById('costGrandTotalTWD');
+      const costGrandTotalUSD = document.getElementById('costGrandTotalUSD');
+
       if (tier === 'growth') {
         btnGrowth.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition";
         btnEnterprise.className = "px-3.5 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
@@ -1246,9 +1290,9 @@
         costSoftwareTWD.innerText = '約 NT$ 85,590 / 月';
         costCloud.innerHTML = '$3,800 <span class="text-xs font-normal text-gray-400">USD</span>';
         costCloudTWD.innerText = '約 NT$ 120,460 / 月';
-        costTierDesc.innerText = '適用於日活躍玩家 10,000~30,000 人、注單峰值 1,500 TPS';
-        costTotalUSD.innerHTML = '$10,000 <span class="text-base font-semibold text-gray-300">USD / 月</span>';
-        costTotalTWD.innerText = 'NT$ 317,000';
+        costTierDesc.innerText = '平台外包底費 NT$ 1,000,000 + 自主技術防禦與雲端基建 NT$ 317,000（日活 10k~30k, 1,500 TPS）';
+        costGrandTotalTWD.innerHTML = 'NT$ 1,317,000 <span class="text-base font-semibold text-gray-300">/ 月</span>';
+        costGrandTotalUSD.innerText = '$41,546';
       } else {
         btnEnterprise.className = "px-3.5 py-1.5 rounded-lg bg-amber-600 text-white font-bold transition";
         btnGrowth.className = "px-3.5 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
@@ -1258,9 +1302,9 @@
         costSoftwareTWD.innerText = '約 NT$ 152,160 / 月';
         costCloud.innerHTML = '$11,000 <span class="text-xs font-normal text-gray-400">USD</span>';
         costCloudTWD.innerText = '約 NT$ 348,700 / 月';
-        costTierDesc.innerText = '跨國多站點、跨雲異地雙活 (AWS+阿里雲)、日活躍 100,000+ 人、注單峰值 5,000+ TPS';
-        costTotalUSD.innerHTML = '$21,800 <span class="text-base font-semibold text-gray-300">USD / 月</span>';
-        costTotalTWD.innerText = 'NT$ 690,960';
+        costTierDesc.innerText = '平台外包底費 NT$ 1,000,000 + 跨雲雙活基建與頂級防禦 NT$ 690,960（日活 100k+, 5,000+ TPS）';
+        costGrandTotalTWD.innerHTML = 'NT$ 1,690,960 <span class="text-base font-semibold text-gray-300">/ 月</span>';
+        costGrandTotalUSD.innerText = '$53,346';
       }
     }
 
