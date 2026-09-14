@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>次世代企業級高可用韌性架構演進藍圖 | 架構負責人：崇緯 ｜ 審查：元翔</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    
+    :root {
+      --bg-main: #0B0F17;
+      --bg-card: rgba(17, 24, 39, 0.78);
+      --border-card: rgba(255, 255, 255, 0.08);
+      --gold-accent: #D97706;
+      --amber-gold: #F59E0B;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      background-color: var(--bg-main);
+      color: #E2E8F0;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(217, 119, 6, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-card);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-card-hover {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(245, 158, 11, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.65), 0 0 15px -3px rgba(245, 158, 11, 0.15);
+    }
+
+    /* Custom Checkbox */
+    .custom-checkbox:checked {
+      background-color: #F59E0B;
+      border-color: #F59E0B;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D97706;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 lg:p-10">
+
+  <!-- Top Executive Header -->
+  <header class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-gray-800/80 pb-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+          Enterprise Architecture & Security Hardening Directive
+        </div>
+        <h1 class="text-3xl lg:text-4xl font-black tracking-tight text-white flex items-center gap-3">
+          次世代企業級高可用韌性架構之核心戰略演進藍圖
+        </h1>
+        <p class="text-sm md:text-base text-gray-400 mt-1.5 font-normal">
+          貫徹「次世代全域數位底座之核心戰略演進樞紐」（零信任身分安全、金融級高彈性清算、分散式事務一致性、流式智能風控決策）之全面工程實作、防護體系與驗收準則
+        </p>
+      </div>
+
+      <!-- Attribution & Badges (Readiness + Cost OPEX) -->
+      <div class="flex flex-wrap items-center gap-4">
+        <!-- Monthly OPEX Quick Badge -->
+        <a href="#cost-section" class="flex items-center gap-3 bg-gradient-to-r from-emerald-950/80 to-gray-900 border border-emerald-500/40 p-3.5 rounded-2xl hover:border-emerald-400 transition cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-lg">💰</div>
+          <div>
+            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">每月維運成本 (美金/台幣雙幣對照)</div>
+            <div class="text-base font-black text-white">$10,000 ~ $21,800 <span class="text-xs text-gray-400 font-normal">USD</span></div>
+            <div class="text-[11px] text-amber-300 font-bold">約 NT$ 317,000 ~ 690,960 / 月 ➔ <span class="text-emerald-400 underline">查看精算表</span></div>
+          </div>
+        </a>
+
+        <!-- Readiness Score Badge -->
+        <div class="flex items-center gap-3 bg-gray-900/90 border border-gray-800 p-3.5 rounded-2xl">
+          <div class="text-right">
+            <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">防禦韌性整備率</div>
+            <div class="text-xl font-black text-amber-400" id="readinessScoreText">0%</div>
+            <div class="text-[10px] text-gray-500"><span id="completedCount" class="text-white font-bold">0</span>/18 項任務</div>
+          </div>
+          <div class="w-12 h-12 relative flex items-center justify-center">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+              <path class="text-gray-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="circleProgress" class="text-amber-500 transition-all duration-500 ease-out" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <span class="absolute text-[10px] font-bold text-gray-300" id="circleText">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Meta info line -->
+    <div class="flex flex-wrap items-center justify-between text-xs text-gray-400 mt-3 pt-1">
+      <div class="flex items-center gap-3">
+        <span class="text-gray-300 font-semibold">架構負責人：</span>
+        <span class="text-amber-300 font-bold bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-800/40">崇緯</span>
+        <span class="text-gray-600">|</span>
+        <span class="text-gray-300 font-semibold">審查：</span>
+        <span class="text-amber-300 font-bold bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-800/40">元翔</span>
+        <span class="hidden md:inline text-gray-600">|</span>
+        <span class="text-gray-400">體系標準：零信任 RBAC · SAGA 分散式事務 · 智能金流容災路由 · 實時特徵風控</span>
+      </div>
+      <div class="mt-2 md:mt-0 text-gray-500">
+        基準目標：消除單點故障，實現高可用性 (99.99%) 與零漏單保證
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Navigation Bar -->
+  <div class="max-w-7xl mx-auto mb-6 flex flex-wrap items-center gap-3">
+    <a href="#roadmap-section" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-xs font-bold text-gray-300 hover:text-white hover:border-gray-700 transition flex items-center gap-2">
+      <span>📋</span> 18 項關鍵工程任務
+    </a>
+    <a href="#procurement-section" class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-xs font-bold text-gray-300 hover:text-white hover:border-gray-700 transition flex items-center gap-2">
+      <span>🛡️</span> 屋內必備採購與技術矩陣
+    </a>
+    <a href="#cost-section" class="px-4 py-2 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-xs font-black text-emerald-300 hover:bg-emerald-900/60 transition flex items-center gap-2 shadow-lg shadow-emerald-950/40">
+      <span>💰</span> 每月維運成本精算（點此直接跳轉）
+    </a>
+  </div>
+
+  <!-- Main Workboard Container -->
+  <main class="max-w-7xl mx-auto space-y-8">
+
+    <!-- 3-Phase Milestone Roadmap (Horizontal Stepper) -->
+    <div id="roadmap-section" class="glass-card rounded-2xl p-6 scroll-mt-6">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-base font-extrabold text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          工程落地三階段演進路徑（Phase 1 至 Phase 3）
+        </h2>
+        <span class="text-xs text-gray-400">總實施週期：180 天</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Sprint 1 -->
+        <div class="p-4 rounded-xl bg-gray-900/90 border border-red-500/30 relative overflow-hidden">
+          <div class="absolute top-0 right-0 px-3 py-0.5 bg-red-500/20 text-red-400 text-[10px] font-bold uppercase rounded-bl-lg border-b border-l border-red-500/30">P0 止血加固</div>
+          <div class="text-xs font-bold text-amber-400 mb-1">Phase 1 (Day 1 - 30)</div>
+          <div class="text-sm font-black text-white mb-2">身分邊界與金流止血</div>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            全面拔除預設帳密，實施超管強制 2FA + IP 白名單；部署多 PromptPay 商戶輪換與手動跳卡熔斷，防止金流斷線。
+          </p>
+        </div>
+
+        <!-- Sprint 2 -->
+        <div class="p-4 rounded-xl bg-gray-900/90 border border-amber-500/30 relative overflow-hidden">
+          <div class="absolute top-0 right-0 px-3 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] font-bold uppercase rounded-bl-lg border-b border-l border-amber-500/30">P1 架構重構</div>
+          <div class="text-xs font-bold text-amber-400 mb-1">Phase 2 (Day 31 - 90)</div>
+          <div class="text-sm font-black text-white mb-2">非同步解耦與錢包事務補償</div>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            重構 Seamless Wallet 為 SAGA 分散式事務模式，引入 Kafka 佇列處理注單扣款，解決廠商逾時掉單與卡額問題。
+          </p>
+        </div>
+
+        <!-- Sprint 3 -->
+        <div class="p-4 rounded-xl bg-gray-900/90 border border-blue-500/30 relative overflow-hidden">
+          <div class="absolute top-0 right-0 px-3 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-bold uppercase rounded-bl-lg border-b border-l border-blue-500/30">P2 風控與韌性</div>
+          <div class="text-xs font-bold text-amber-400 mb-1">Phase 3 (Day 91 - 180)</div>
+          <div class="text-sm font-black text-white mb-2">實時風控引擎與容災閉環</div>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            建置流式特徵計算（Flink）對稱下注監控、設備指紋識別；搭建跨雲雙活（Multi-Cloud Active-Active）災備。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter & Domain Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+        <button onclick="filterDomain('all')" class="domain-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-gray-950 transition" data-domain="all">全部任務 (18)</button>
+        <button onclick="filterDomain('identity')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="identity">身分安全 (3)</button>
+        <button onclick="filterDomain('payment')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="payment">金流容災 (3)</button>
+        <button onclick="filterDomain('wallet')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="wallet">事務錢包 (3)</button>
+        <button onclick="filterDomain('risk')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="risk">即時風控 (3)</button>
+        <button onclick="filterDomain('edge')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="edge">邊緣與前端 (3)</button>
+        <button onclick="filterDomain('bcp')" class="domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition" data-domain="bcp">容災合規 (3)</button>
+      </div>
+
+      <div class="flex items-center gap-3 self-end md:self-auto">
+        <button onclick="checkAll(true)" class="text-xs text-amber-400 hover:text-amber-300 font-semibold underline">全部勾選</button>
+        <span class="text-gray-700">|</span>
+        <button onclick="checkAll(false)" class="text-xs text-gray-400 hover:text-white font-semibold underline">全部重設</button>
+      </div>
+    </div>
+
+    <!-- Tasks Grid (18 Detailed Engineering Action Items) -->
+    <div id="tasksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- ITEM 1: Identity -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="identity" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">1. 超管強制 TOTP 2FA 與 IP 白名單門禁</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          廢除後台預設密碼機制；後台入口強制綁定 Google Authenticator 驗證碼，且透過 Nginx / Cloudflare 嚴格限縮來源 CIDR。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Google Authenticator PAM, WAF CIDR Rule</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>未經授權 IP 存取直接阻斷 (403)，密碼爆破零防禦漏洞。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 2: Identity -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="identity" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">2. 財務大額出金「雙人覆核機制 (Four-Eyes)」</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          單一出款超過 50,000 THB 需兩名不同權限角色（客服初審 + 財務主管終審）核可；禁止同一帳號自審自批。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>RBAC 狀態機（Pending -> Approved1 -> Approved2）</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>杜絕單一內鬼或帳號失竊直接執行批量代發。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 3: Identity -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="identity" data-weight="4">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">3. 集中式不可變審計日誌 (WORM Audit Log)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          所有手動調帳、玩家密碼重設、代理分潤比率變更事件，必須同步加密傳輸至隔離日誌伺服器，禁止覆蓋刪除。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Elasticsearch + Logstash + AWS S3 Object Lock</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>日誌留存至少 180 天，具備數位簽名完整性校驗。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 4: Payment -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="payment" data-weight="7">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">4. 金流多通道智能健康探針與自動熔斷</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          每 30 秒自動探測 PromptPay 與各三方商戶號可用率，連續 3 筆入金超時或回報失敗，系統 2 秒內自動切換至備用通道。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>動態權重智能路由演算法 (Smart Payment Router)</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>商戶號遭凍結時前台充值通道無感切換，掉單率降至 0.05% 以下。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 5: Payment -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="payment" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">5. 動態微額隨機碼對帳機制（小數點尾數）</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          玩家充值 1000 THB 時，動態生成 1000.17 或 1000.42 THB 訂單，泰國 PromptPay 掃碼後自動秒級精準銷單，免附言校對。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>小數點訂單碰撞分配池 (TTL 10分鐘釋放)</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>人工對單客服工作量降低 90%，充值到帳平均 3 秒。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 6: Payment -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="payment" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">6. 異步代發隊列與私卡每日額度熔斷</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          對公與私卡轉帳帳戶實施單日入款 30 萬 THB 強制下線保護機制；出金代發採用 Redis 優先級隊列防高並發並發穿透。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Redis Stream + Worker Pool + 銀行額度狀態監控</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>避免銀行卡觸發泰國洗錢防制高頻警報遭凍結。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 7: Wallet -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="wallet" data-weight="8">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">7. SAGA 分散式事務與補償調度器</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          將遊戲廠商（PG, SA, EVO）下注與派彩轉化為 SAGA 模式；遇到廠商 API 回調逾時時，自動發起預約補償或安全平帳。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Temporal.io / Go SAGA Coordinator + DB 冪等表</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>徹底消除「注單成功但用戶被扣款兩次」或「掉額」客訴。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 8: Wallet -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="wallet" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">8. 嚴格冪等鍵與分散式 Redis 鎖</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          每一筆 `transaction_id` 在進入錢包變更前，強制取得 `Redlock`；底層資料庫設定唯一索引（Unique Constraint），防高頻重放。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Redis 分散式鎖 + MySQL InnoDB 嚴格約束</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>在 5,000 TPS 併發壓力測試下，帳務一致性為 100.00%。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 9: Wallet -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-blue-500" data-domain="wallet" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30">P2 風控與韌性</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">9. 延遲注單自動排程平帳機器人 (Recon Worker)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          每隔 3 分鐘自動調用各遊戲商結算 API 拉取過去 2 小時注單；對比本機資料庫未結算記錄，自動差額多退少補並寫入對帳明細。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Go Cron Service + API Rate-limit Adapter</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>跨日延遲注單自動修正率達 99.8%，財務免手動調帳。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 10: Risk -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="risk" data-weight="7">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">10. 實時注單特徵引擎（對沖與刷水毫秒告警）</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          針對真人百家樂（莊閒同時下注）與體育雙邊盤口，即時扣除洗碼流水；當同一 IP 關聯帳號下注對立面，立即凍結提款權限。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Apache Flink 實時流處理 + 關聯圖演算法</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>對沖套利辨識反應時間 &lt; 500ms，有效止損羊毛黑產。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 11: Risk -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="risk" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">11. 高級設備指紋 (Device Fingerprint) 與多開阻斷</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          採集 Canvas, WebGL, 聲學指紋與本機儲存 Token；同設備註冊超過 2 個帳號即禁止領取新手禮金，強制綁定本人電話。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>FingerprintJS Pro / 自研混合多特徵指紋演算法</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>群控模擬器與多開惡意註冊攔截率 &gt; 96%。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 12: Risk -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="risk" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">12. 老虎機「卡免費旋轉 (Feature Buy)」套利攔截</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          偵測玩家使用充值贈金購買 PG 老虎機 Feature Free Spin 後惡意關閉遊戲，待優惠失效或提款後再開啟領獎之鑽漏洞行為。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>出金前自動檢查 PG/JDB 遊戲局未結狀態 (Pending Rounds)</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>提款時若有未完成之獎勵局，自動暫扣並要求結清。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 13: Edge -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-red-500" data-domain="edge" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30">P0 立即執行</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">13. 源站完全隱匿與 Anycast DDoS 防護層</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          使用 Cloudflare Magic Transit / Enterprise 隱藏真實伺服器 IP；源站防火牆只允許 Cloudflare 節點存取，杜絕直連攻擊。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Cloudflare WAF + Argo Smart Routing + IPTables 鎖定</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>源站真實 IP 零洩漏，可抵禦 500Gbps+ L3/L4 洪泛攻擊。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 14: Edge -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="edge" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">14. 前端 JavaScript 深度混淆與接口簽名 (HMAC)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          對 Vue / React 打包文件進行二進制級控制流平坦化混淆；所有前後端交互帶有 `Timestamp + Nonce + HMAC-SHA256` 簽名。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>Webpack Obfuscator Plugin + 動態密鑰協商</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>防範腳本調用未公開之 Admin API 或直接偽造出入金請求。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 15: Edge -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-blue-500" data-domain="edge" data-weight="4">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30">P2 風控與韌性</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">15. 智慧備份域名動態下發與防封劫持機制</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          當前台域名遭泰國 ISP (AIS, True, DTAC) DNS 污染時，APP 或 PWA 自動透過 DoH (DNS-over-HTTPS) 獲取最新乾淨線路。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>動態邊緣配置 (Cloudflare Workers KV) + DoH 容災客戶端</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>域名被封禁 30 秒內玩家自動切換無縫續玩。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 16: BCP & Compliance -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-500" data-domain="bcp" data-weight="6">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">P1 架構重構</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">16. 跨雲雙活災難復原演練 (RPO &lt; 5m, RTO &lt; 30m)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          核心資料庫採用 AWS 東京區 + 阿里雲新加坡跨雲即時雙向異地同步；每月定期執行機房級突發中斷故障切換演練。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>MySQL Group Replication / TiDB 分散式資料庫</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>單一雲端機房故障，平台數據零遺失 (RPO=0)，業務快速恢復。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 17: BCP & Compliance -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-blue-500" data-domain="bcp" data-weight="5">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30">P2 風控與韌性</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">17. 代理結算防爆倉鎖定與負盈利結算閉環審計</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          代理佣金結算導入「淨毛利穿透式校驗公式」，先扣除金流費與遊戲廠商成本；負盈利累積機制（Negative Carryover）自動滾存。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>智慧分潤合約模組 + 每日自動對帳試算表</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>全平台代理總佣金支出絕對不超過全域淨毛利之 45%。</div>
+        </div>
+      </div>
+
+      <!-- ITEM 18: BCP & Compliance -->
+      <div class="task-card glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-blue-500" data-domain="bcp" data-weight="4">
+        <div class="flex items-start justify-between gap-3 mb-2.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30">P2 風控與韌性</span>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="onTaskToggle(this)" class="custom-checkbox w-4 h-4 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-0">
+            <span class="text-xs text-gray-400 font-medium">已完成</span>
+          </label>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1.5">18. 牌照化標準 KYC 與負責任博彩（RG）治理防護</h3>
+        <p class="text-xs text-gray-400 leading-relaxed mb-3">
+          導入國際馬爾他（MGA）規範之單日存款上限設定、冷靜期自我排除按鈕與泰國可疑洗錢（STR）模式智能預警。
+        </p>
+        <div class="pt-2.5 border-t border-gray-800/80 text-[11px] text-gray-400 space-y-1">
+          <div><strong class="text-gray-300">技術交付：</strong>KYC 影像證件識別 API + 自我排除計時器</div>
+          <div><strong class="text-amber-400">驗收指標：</strong>系統具備國際一線監管合規能力，擺脫地下純灰產脆弱定位。</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comparative Maturity Radar Matrix & Live Gap Analysis -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <div class="lg:col-span-5 glass-card rounded-2xl p-6">
+        <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+          加固前後成熟度動態追蹤
+        </h3>
+        <p class="text-xs text-gray-400 mb-4">隨著任務勾選推進，我司預估成熟度將實時動態攀升。</p>
+        <div class="relative h-[290px] flex items-center justify-center">
+          <canvas id="maturityRadar"></canvas>
+        </div>
+        <div class="flex justify-center gap-6 text-xs mt-3">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="text-gray-300">初始現狀 (基礎架構)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <span class="text-gray-300">加固後動態指標</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+            <span class="text-gray-300">國際一線 (Bet365)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 glass-card rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            我司高階技術架構改造落地建議（CTO / CISO 視角）
+          </h3>
+          <p class="text-xs text-gray-400 mb-4">
+            要全面提升系統的穩健度與長遠營運韌性，核心在於將外包基礎組件逐步升級為我司自主掌握的四大技術護城河：
+          </p>
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800">
+              <span class="text-amber-400 font-bold">1. 自研遊戲聚合代理層（Game Aggregator Gateway）：</span>
+              <span class="text-gray-300">統一對接 PG, SA, JDB 等廠商，由自研 SAGA 框架負責資金扣減，隔離三方廠商的同步故障，杜絕卡額。</span>
+            </div>
+            <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800">
+              <span class="text-blue-400 font-bold">2. 跨商戶金流清算路由器（Smart Payment Switch）：</span>
+              <span class="text-gray-300">不單一綁定任一泰國代收通道，建立動態商戶健康檢查池與微額小數點自動對帳，保障 24/7 出入金不中斷。</span>
+            </div>
+            <div class="p-3 bg-gray-900/90 rounded-xl border border-gray-800">
+              <span class="text-emerald-400 font-bold">3. 邊緣與流式風控（Edge WAF & Flink CEP）：</span>
+              <span class="text-gray-300">在玩家下注的當下即時比對雙邊對打特徵與設備多開指紋，將原本出金時的被動人工審核，轉化為前置自動攔截。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
+          <div>架構交付總結：由「被動打補丁」轉變為「分散式高彈性架構」</div>
+          <div class="text-amber-400 font-bold">架構負責人：崇緯 ｜ 審查：元翔</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NEW SECTION: Procurement & Tech Stack Investment Blueprint -->
+    <div id="procurement-section" class="glass-card rounded-2xl p-6 border-t-2 border-t-amber-500 scroll-mt-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            Strategic Procurement & Technology Stack Roadmap
+          </div>
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            穿透屋內死穴：我司必備之採購服務與核心技術棧投資矩陣
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">
+            Akamai / Cloudflare 僅能防禦外牆邊緣流量（解決約 20%~30%），針對屋內帳務、身分、金流與即時決策核心，我司須規劃落地之四大採購服務與技術組件：
+          </p>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 px-4 py-2 rounded-xl text-right">
+          <div class="text-[11px] text-gray-400">總體戰略目標</div>
+          <div class="text-sm font-black text-amber-400">全棧自主防護 · 99.99% 高可用</div>
+        </div>
+      </div>
+
+      <!-- 4 Pillars of Procurement & Tech -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Pillar 1: Identity & Access Management -->
+        <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">身分治理</span>
+              <span class="text-xs font-bold text-gray-400">P0 必備</span>
+            </div>
+            <h4 class="text-sm font-black text-white mb-1.5">企業級零信任身分與堡壘雲服務</h4>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              解決後台弱密碼、管理員失竊與內鬼違規調帳等屋內權限失控。
+            </p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-amber-400 font-semibold block">外部採購服務：</span>
+                <span class="text-gray-400">Okta / Cloudflare Access (Zero Trust) + Teleport 堡壘機</span>
+              </div>
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-blue-400 font-semibold block">內部核心技術棧：</span>
+                <span class="text-gray-400">WebAuthn / FIDO2 硬體鎖認證 + 雙人簽核工作流引擎</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-gray-800 text-[11px] text-amber-400 font-semibold">
+            ✓ 根絕後台遭撞庫與單人盜取資金
+          </div>
+        </div>
+
+        <!-- Pillar 2: Payment Aggregation & Clearing -->
+        <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">金流容災</span>
+              <span class="text-xs font-bold text-gray-400">P0 必備</span>
+            </div>
+            <h4 class="text-sm font-black text-white mb-1.5">智能多商戶清算交換機 (Payment Switch)</h4>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              解決泰國 PromptPay/私卡頻繁被凍結導致的全站充值出金停擺。
+            </p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-amber-400 font-semibold block">外部採購服務：</span>
+                <span class="text-gray-400">對接至少 4~5 家具備本地牌照的三方代收代付備援商戶</span>
+              </div>
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-emerald-400 font-semibold block">內部核心技術棧：</span>
+                <span class="text-gray-400">Golang 毫秒級權重路由調度器 + 隨機微額小數點自動銷單池</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-gray-800 text-[11px] text-emerald-400 font-semibold">
+            ✓ 實現 24/7 單通道故障 2 秒無感切換
+          </div>
+        </div>
+
+        <!-- Pillar 3: Distributed Transaction & Wallet -->
+        <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">交易錢包</span>
+              <span class="text-xs font-bold text-gray-400">P1 必備</span>
+            </div>
+            <h4 class="text-sm font-black text-white mb-1.5">SAGA 分散式錢包事務編排引擎</h4>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              解決遊戲廠商回調逾時引起的帳務不一致、掉單與注單卡額。
+            </p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-amber-400 font-semibold block">外部採購服務：</span>
+                <span class="text-gray-400">AWS MSK (託管 Kafka) / Confluent Cloud + Redis Enterprise</span>
+              </div>
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-purple-400 font-semibold block">內部核心技術棧：</span>
+                <span class="text-gray-400">Temporal.io 分散式工作流編排 + 嚴格冪等鍵狀態機 (ACID)</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-gray-800 text-[11px] text-purple-400 font-semibold">
+            ✓ 達到 5,000+ TPS 併發下帳務 100% 零差錯
+          </div>
+        </div>
+
+        <!-- Pillar 4: Real-time Risk & Intelligence -->
+        <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">即時風控</span>
+              <span class="text-xs font-bold text-gray-400">P1 必備</span>
+            </div>
+            <h4 class="text-sm font-black text-white mb-1.5">設備指紋與流式注單關聯反套利引擎</h4>
+            <p class="text-xs text-gray-400 leading-relaxed mb-3">
+              解決黑產刷水黨利用多開模擬器與真人對稱下注吸乾平台紅利。
+            </p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-amber-400 font-semibold block">外部採購服務：</span>
+                <span class="text-gray-400">Fingerprint Pro 商業指紋授權 / Sift Science 詐欺情報</span>
+              </div>
+              <div class="p-2 bg-black/40 rounded-lg border border-gray-800">
+                <span class="text-rose-400 font-semibold block">內部核心技術棧：</span>
+                <span class="text-gray-400">Apache Flink 實時流計算 + 圖資料庫 (Neo4j 關聯分析)</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-gray-800 text-[11px] text-rose-400 font-semibold">
+            ✓ 毫秒級自動阻斷對沖刷水，降低 95% 客損被套
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Comparison Matrix Table -->
+      <div class="mt-6 pt-5 border-t border-gray-800 overflow-x-auto">
+        <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">外牆防護 (CDN/WAF) vs 屋內核心採購與技術協同架構總覽</h4>
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400">
+              <th class="py-2.5 px-3">業務場景</th>
+              <th class="py-2.5 px-3 text-blue-400">外牆防護：Akamai / Cloudflare</th>
+              <th class="py-2.5 px-3 text-amber-400">屋內必備：我司採購之服務與自研技術</th>
+              <th class="py-2.5 px-3 text-emerald-400">協同達成的終極防線</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-800 text-gray-300">
+            <tr>
+              <td class="py-2.5 px-3 font-semibold text-white">超管身分安全</td>
+              <td class="py-2.5 px-3">防 L7 CC 攻擊、阻擋已知黑名單 IP</td>
+              <td class="py-2.5 px-3">Okta / Teleport 堡壘機 + WebAuthn 硬體鎖 + 財務雙人審核</td>
+              <td class="py-2.5 px-3 text-emerald-400">即使密碼洩漏，無實體硬體鎖與白名單亦無法登入</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-semibold text-white">金流出入順暢</td>
+              <td class="py-2.5 px-3">保證充值頁面加載快、API 連線不中斷</td>
+              <td class="py-2.5 px-3">簽約 4~5 家備援三方 + 自研動態小數點對帳路由交換機</td>
+              <td class="py-2.5 px-3 text-emerald-400">單一商戶遭銀行凍結，系統 2 秒無感漂移至備用線路</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-semibold text-white">遊戲免轉錢包</td>
+              <td class="py-2.5 px-3">加速廠商 API 傳輸，減低網路延遲</td>
+              <td class="py-2.5 px-3">Kafka 訊息隊列 + Temporal SAGA 分散式事務補償</td>
+              <td class="py-2.5 px-3 text-emerald-400">第三方遊戲商斷線時自動安全平帳，杜絕掉單與客訴</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-semibold text-white">反刷水與套利</td>
+              <td class="py-2.5 px-3">阻擋粗暴的自動化爬蟲與惡意掃描器</td>
+              <td class="py-2.5 px-3">Fingerprint Pro 設備指紋 + Flink 毫秒級對稱注單特徵運算</td>
+              <td class="py-2.5 px-3 text-emerald-400">下注當下直接識別對沖與多開，提款前自動扣減不當獲利</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NEW SECTION: Monthly OPEX & Cloud Infrastructure Cost Assessment -->
+    <div id="cost-section" class="glass-card rounded-2xl p-6 border-t-2 border-t-emerald-500 scroll-mt-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            Monthly OPEX & Cloud Infrastructure Budget Assessment
+          </div>
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            軟體授權、安全服務與雲端基礎設施月維運成本（Monthly OPEX）精算
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">
+            針對屋內屋外部署之完整企業級技術棧，依營運規模分為「穩健成長版」與「旗艦高併發版」之詳細費用估算：
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-xs text-gray-300">
+            <span>💱 基準匯率：</span>
+            <strong class="text-amber-400 font-bold">1 USD = 31.70 TWD</strong>
+            <span class="text-gray-500 text-[11px]">(全表美金/台幣同步精算)</span>
+          </div>
+          <div class="flex bg-gray-900 p-1 rounded-xl border border-gray-800 text-xs">
+            <button id="btnCostGrowth" onclick="switchCostTier('growth')" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition">穩健成長版 (Growth)</button>
+            <button id="btnCostEnterprise" onclick="switchCostTier('enterprise')" class="px-3.5 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition">旗艦高併發雙活版 (Enterprise)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Cards Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+        <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl">
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">外牆邊緣與安全防護月費</div>
+          <div class="text-2xl font-black text-blue-400 mt-1" id="costEdge">$3,500 <span class="text-xs font-normal text-gray-400">USD</span></div>
+          <div class="text-xs font-bold text-amber-300 mt-0.5" id="costEdgeTWD">約 NT$ 110,950 / 月</div>
+          <div class="text-[11px] text-gray-500 mt-1">Cloudflare Enterprise + Magic Transit + Bot Mgmt</div>
+        </div>
+        <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl">
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">屋內軟體授權與風控服務</div>
+          <div class="text-2xl font-black text-amber-400 mt-1" id="costSoftware">$2,700 <span class="text-xs font-normal text-gray-400">USD</span></div>
+          <div class="text-xs font-bold text-amber-300 mt-0.5" id="costSoftwareTWD">約 NT$ 85,590 / 月</div>
+          <div class="text-[11px] text-gray-500 mt-1">Okta IAM, Teleport 堡壘機, Fingerprint Pro, 商戶固定維護</div>
+        </div>
+        <div class="bg-gray-900/90 border border-gray-800 p-4 rounded-xl border-l-4 border-l-emerald-500">
+          <div class="text-[11px] text-gray-400 uppercase font-semibold">雲端基礎設施 (AWS / 跨雲)</div>
+          <div class="text-2xl font-black text-emerald-400 mt-1" id="costCloud">$3,800 <span class="text-xs font-normal text-gray-400">USD</span></div>
+          <div class="text-xs font-bold text-amber-300 mt-0.5" id="costCloudTWD">約 NT$ 120,460 / 月</div>
+          <div class="text-[11px] text-gray-500 mt-1">EKS 容器群, Aurora DB, MSK Kafka, Redis, 出網流量</div>
+        </div>
+      </div>
+
+      <!-- Total Cost Highlight Bar -->
+      <div class="p-5 rounded-xl bg-gradient-to-r from-emerald-950/60 via-gray-900 to-amber-950/40 border border-emerald-500/40 flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xl">Σ</div>
+          <div>
+            <div class="text-sm font-black text-gray-200">總體每月固定維運預算（Monthly TCO）</div>
+            <div class="text-xs text-gray-400 mt-0.5" id="costTierDesc">適用於日活躍玩家 10,000~30,000 人、注單峰值 1,500 TPS</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-black text-emerald-400" id="costTotalUSD">$10,000 <span class="text-base font-semibold text-gray-300">USD / 月</span></div>
+          <div class="text-base font-black text-amber-300 mt-0.5">約 <span id="costTotalTWD">NT$ 317,000</span> / 月 <span class="text-xs font-normal text-gray-400">(約 350,000 THB)</span></div>
+        </div>
+      </div>
+
+      <!-- Itemized Cost Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400 bg-gray-950/60">
+              <th class="py-3 px-4">預算類別</th>
+              <th class="py-3 px-4">服務項目 / 軟體組件</th>
+              <th class="py-3 px-4">計費模式與規格</th>
+              <th class="py-3 px-4 text-emerald-400 text-right">成長版月費 (美金 / 台幣)</th>
+              <th class="py-3 px-4 text-amber-400 text-right">旗艦雙活版月費 (美金 / 台幣)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-800 text-gray-300" id="costTableBody">
+            <tr>
+              <td class="py-3 px-4 font-bold text-blue-400" rowspan="2">外牆邊緣安全</td>
+              <td class="py-3 px-4 font-semibold text-white">Cloudflare Enterprise 旗艦防護</td>
+              <td class="py-3 px-4 text-gray-400">DDoS 500Gbps+ 清洗、WAF、Anycast CDN、專屬技術經理</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$3,000 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 95,100</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$5,000 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 158,500</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">Bot Management & 爬蟲防護</td>
+              <td class="py-3 px-4 text-gray-400">機器學習識別高頻掃描腳本與惡意發包</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$500 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 15,850</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,000 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 31,700</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="py-3 px-4 font-bold text-purple-400" rowspan="3">身分治理與權限</td>
+              <td class="py-3 px-4 font-semibold text-white">Okta / Cloudflare Access 零信任</td>
+              <td class="py-3 px-4 text-gray-400">內部營運/財務/客服/工程 30~50 席位 ($8~$12/席)</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$300 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 9,510</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$600 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 19,020</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">Teleport 雲端堡壘跳板機</td>
+              <td class="py-3 px-4 text-gray-400">資料庫/伺服器連線錄影、SSH 集中稽核與指令審查</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$500 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 15,850</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,000 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 31,700</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">YubiKey 5 NFC 實體硬體鎖</td>
+              <td class="py-3 px-4 text-gray-400">單次採購 30 支（分攤月成本約 $150，次年為 0）</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$150 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 4,755</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$200 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 6,340</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="py-3 px-4 font-bold text-amber-400" rowspan="2">金流通道容災</td>
+              <td class="py-3 px-4 font-semibold text-white">三方代收代付備用商戶底費</td>
+              <td class="py-3 px-4 text-gray-400">4~5 個商戶號最低月度系統維護費 ($200~$300/商戶)</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$1,000 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 31,700</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,500 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 47,550</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">簡訊 OTP 驗證網關 (Twilio / 本地)</td>
+              <td class="py-3 px-4 text-gray-400">泰國本地註冊與大額提款簡訊發送 (~3 萬筆/月)</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$450 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 14,265</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,200 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 38,040</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="py-3 px-4 font-bold text-rose-400" rowspan="2">智能風控授權</td>
+              <td class="py-3 px-4 font-semibold text-white">Fingerprint Pro 設備指紋授權</td>
+              <td class="py-3 px-4 text-gray-400">1,000,000 ~ 3,000,000 API 識別呼叫配額</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$800 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 25,360</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,800 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 57,060</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">IPQS / 威脅情資黑名單 API</td>
+              <td class="py-3 px-4 text-gray-400">VPN / 代理 / 模擬器農場 IP 即時打分接口</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$400 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 12,680</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$800 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 25,360</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="py-3 px-4 font-bold text-emerald-400" rowspan="5">雲端基礎設施 (AWS/阿里雲)</td>
+              <td class="py-3 px-4 font-semibold text-white">EKS / K8s 應用容器群 (6~12 節點)</td>
+              <td class="py-3 px-4 text-gray-400">c6g.xlarge / c6g.2xlarge 核心業務高彈性運算群</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$900 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 28,530</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$2,200 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 69,740</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">AWS Aurora MySQL (Multi-AZ 叢集)</td>
+              <td class="py-3 px-4 text-gray-400">主庫 + 讀寫分離只讀節點，SSD 存儲與自動快照備份</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$1,200 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 38,040</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$2,600 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 82,420</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">AWS MSK (託管 Kafka 佇列)</td>
+              <td class="py-3 px-4 text-gray-400">3 節點 Broker，處理下注、派彩與 SAGA 事務編排</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$650 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 20,605</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,200 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 38,040</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">Redis Cluster (分散式鎖與快取)</td>
+              <td class="py-3 px-4 text-gray-400">ElastiCache Multi-AZ 32GB~64GB 高可用集</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$350 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 11,095</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$700 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 22,190</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold text-white">網路頻寬、NAT 閘道與異地備份</td>
+              <td class="py-3 px-4 text-gray-400">東南亞專線流量、東京與新加坡異地數據同步傳輸費</td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-emerald-400">$700 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 22,190</div>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <div class="font-bold text-amber-400">$1,500 <span class="text-[10px] text-gray-400">USD</span></div>
+                <div class="text-[11px] text-amber-300 font-semibold">NT$ 47,550</div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="border-t-2 border-emerald-500 text-sm font-black bg-emerald-950/40">
+              <td colspan="3" class="py-3.5 px-4 text-white">合計每月固定支出估算 (Monthly Total)</td>
+              <td class="py-3.5 px-4 text-right">
+                <div class="text-base font-black text-emerald-400">$10,000 <span class="text-xs text-gray-400">USD/月</span></div>
+                <div class="text-xs font-bold text-amber-300">NT$ 317,000 / 月</div>
+              </td>
+              <td class="py-3.5 px-4 text-right">
+                <div class="text-base font-black text-amber-400">$21,800 <span class="text-xs text-gray-400">USD/月</span></div>
+                <div class="text-xs font-bold text-amber-300">NT$ 690,960 / 月</div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="mt-4 text-[11px] text-gray-500 leading-relaxed">
+        * 註 1：上述費用為固定維運支出（Fixed OPEX），未包含泰國代收代付三方金流的流水抽成（約 1.5%~2.5%），以及遊戲供應商（PG, SA 等）的盈利抽成（約 8%~15%）。<br>
+        * 註 2：成長版可支撐日流水約 1,000萬~3,000萬 THB；旗艦版可支撐跨國多站點營運與 1億+ THB 日流水，並具備 RPO=0 跨雲容災能力。
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Task database weights and baseline scores
+    let tasksCompleted = 0;
+    const totalTasks = 18;
+    const maxScore = 100;
+
+    // Radar baseline
+    const baseWhiteLabel = [18, 35, 20, 25, 30, 10]; // Identity, Concurrency, Payment, Risk, Edge, Compliance
+    const targetTier1 = [95, 92, 96, 90, 88, 98];
+    let currentDynamic = [...baseWhiteLabel];
+
+    const radarLabels = ['身分門禁(2FA)', '高併發事務', '金流容災路由', '實時反套利', '前端邊緣防禦', '合規與災備'];
+
+    // Chart init
+    const ctx = document.getElementById('maturityRadar').getContext('2d');
+    const maturityRadar = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: radarLabels,
+        datasets: [{
+          label: '加固後動態指標',
+          data: currentDynamic,
+          fill: true,
+          backgroundColor: 'rgba(245, 158, 11, 0.25)',
+          borderColor: 'rgb(245, 158, 11)',
+          pointBackgroundColor: 'rgb(245, 158, 11)',
+          pointHoverRadius: 6,
+          borderWidth: 2
+        }, {
+          label: '初始現狀 (基礎架構)',
+          data: baseWhiteLabel,
+          fill: false,
+          borderColor: 'rgb(239, 68, 68)',
+          borderDash: [4, 4],
+          pointBackgroundColor: 'rgb(239, 68, 68)',
+          borderWidth: 1.5
+        }, {
+          label: '國際一線旗艦',
+          data: targetTier1,
+          fill: false,
+          borderColor: 'rgba(59, 130, 246, 0.6)',
+          borderDash: [2, 2],
+          pointBackgroundColor: 'rgb(59, 130, 246)',
+          borderWidth: 1.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+            pointLabels: { color: '#94A3B8', font: { size: 10.5, weight: 'bold' } },
+            ticks: { display: false, max: 100, min: 0 }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Domain Filter
+    function filterDomain(domain) {
+      const buttons = document.querySelectorAll('.domain-btn');
+      buttons.forEach(btn => {
+        if (btn.dataset.domain === domain) {
+          btn.className = "domain-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-gray-950 transition";
+        } else {
+          btn.className = "domain-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-900 text-gray-400 border border-gray-800 hover:text-white transition";
+        }
+      });
+
+      const cards = document.querySelectorAll('.task-card');
+      cards.forEach(card => {
+        if (domain === 'all' || card.dataset.domain === domain) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Toggle Task and Recalculate
+    function onTaskToggle(checkbox) {
+      updateScores();
+    }
+
+    function checkAll(val) {
+      const boxes = document.querySelectorAll('.custom-checkbox');
+      boxes.forEach(b => b.checked = val);
+      updateScores();
+    }
+
+    function updateScores() {
+      const boxes = Array.from(document.querySelectorAll('.custom-checkbox'));
+      const checkedBoxes = boxes.filter(b => b.checked);
+      tasksCompleted = checkedBoxes.length;
+
+      // Calculate readiness score
+      const readinessPct = Math.round((tasksCompleted / totalTasks) * 100);
+      document.getElementById('readinessScoreText').innerText = readinessPct + '%';
+      document.getElementById('completedCount').innerText = tasksCompleted;
+      document.getElementById('circleText').innerText = readinessPct + '%';
+
+      // Update circle progress SVG
+      const circleProgress = document.getElementById('circleProgress');
+      circleProgress.setAttribute('stroke-dasharray', `${readinessPct}, 100`);
+
+      // Color shifts
+      if (readinessPct >= 80) {
+        circleProgress.className = "text-emerald-400 transition-all duration-500 ease-out";
+      } else if (readinessPct >= 40) {
+        circleProgress.className = "text-amber-500 transition-all duration-500 ease-out";
+      } else {
+        circleProgress.className = "text-red-500 transition-all duration-500 ease-out";
+      }
+
+      // Update Radar dynamically based on domain checked
+      const domainMap = {
+        identity: 0,
+        wallet: 1,
+        payment: 2,
+        risk: 3,
+        edge: 4,
+        bcp: 5
+      };
+
+      // Reset dynamic
+      currentDynamic = [...baseWhiteLabel];
+
+      // Each domain has 3 tasks; each task contributes to reaching Tier-1 score
+      boxes.forEach(box => {
+        if (box.checked) {
+          const card = box.closest('.task-card');
+          const domain = card.dataset.domain;
+          const idx = domainMap[domain];
+          if (idx !== undefined) {
+            const step = (targetTier1[idx] - baseWhiteLabel[idx]) / 3;
+            currentDynamic[idx] = Math.min(targetTier1[idx], Math.round(currentDynamic[idx] + step));
+          }
+        }
+      });
+
+      maturityRadar.data.datasets[0].data = currentDynamic;
+      maturityRadar.update();
+    }
+
+    // Cost Tier Switcher
+    function switchCostTier(tier) {
+      const btnGrowth = document.getElementById('btnCostGrowth');
+      const btnEnterprise = document.getElementById('btnCostEnterprise');
+      const costEdge = document.getElementById('costEdge');
+      const costEdgeTWD = document.getElementById('costEdgeTWD');
+      const costSoftware = document.getElementById('costSoftware');
+      const costSoftwareTWD = document.getElementById('costSoftwareTWD');
+      const costCloud = document.getElementById('costCloud');
+      const costCloudTWD = document.getElementById('costCloudTWD');
+      const costTierDesc = document.getElementById('costTierDesc');
+      const costTotalUSD = document.getElementById('costTotalUSD');
+      const costTotalTWD = document.getElementById('costTotalTWD');
+
+      if (tier === 'growth') {
+        btnGrowth.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition";
+        btnEnterprise.className = "px-3.5 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
+        costEdge.innerHTML = '$3,500 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costEdgeTWD.innerText = '約 NT$ 110,950 / 月';
+        costSoftware.innerHTML = '$2,700 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costSoftwareTWD.innerText = '約 NT$ 85,590 / 月';
+        costCloud.innerHTML = '$3,800 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costCloudTWD.innerText = '約 NT$ 120,460 / 月';
+        costTierDesc.innerText = '適用於日活躍玩家 10,000~30,000 人、注單峰值 1,500 TPS';
+        costTotalUSD.innerHTML = '$10,000 <span class="text-base font-semibold text-gray-300">USD / 月</span>';
+        costTotalTWD.innerText = 'NT$ 317,000';
+      } else {
+        btnEnterprise.className = "px-3.5 py-1.5 rounded-lg bg-amber-600 text-white font-bold transition";
+        btnGrowth.className = "px-3.5 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
+        costEdge.innerHTML = '$6,000 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costEdgeTWD.innerText = '約 NT$ 190,200 / 月';
+        costSoftware.innerHTML = '$4,800 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costSoftwareTWD.innerText = '約 NT$ 152,160 / 月';
+        costCloud.innerHTML = '$11,000 <span class="text-xs font-normal text-gray-400">USD</span>';
+        costCloudTWD.innerText = '約 NT$ 348,700 / 月';
+        costTierDesc.innerText = '跨國多站點、跨雲異地雙活 (AWS+阿里雲)、日活躍 100,000+ 人、注單峰值 5,000+ TPS';
+        costTotalUSD.innerHTML = '$21,800 <span class="text-base font-semibold text-gray-300">USD / 月</span>';
+        costTotalTWD.innerText = 'NT$ 690,960';
+      }
+    }
+
+    // Run initial calculation
+    updateScores();
+  </script>
+</body>
+</html>

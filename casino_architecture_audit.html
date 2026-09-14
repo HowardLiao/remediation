@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國際旗艦 vs 白標套版娛樂城 架構弱項與風險深度評估儀表板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      background-color: #0B0F17;
+      color: #E2E8F0;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .neon-border-red {
+      box-shadow: 0 0 15px -3px rgba(239, 68, 68, 0.25);
+    }
+    .neon-border-blue {
+      box-shadow: 0 0 15px -3px rgba(59, 130, 246, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+  <!-- Header Header Section -->
+  <header class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-800 pb-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold uppercase tracking-wider mb-2">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          System Architecture & Vulnerability Audit
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tight text-white">
+          東南亞白標娛樂城 vs 國際旗艦平台
+        </h1>
+        <p class="text-sm md:text-base text-gray-400 mt-1">
+          針對 M9 / KOOBET 體系架構升級空間、風控機制、金流容災及代理結構之交互分析系統
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <div class="text-xs text-gray-400">總體風險等級</div>
+          <div class="text-xl font-extrabold text-red-400">HIGH CRITICAL (86/100)</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto space-y-8">
+
+    <!-- KPI Summary Row -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-red-500">
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">帳戶驗證安全係數</div>
+        <div class="text-2xl font-black text-white mt-1">18 / 100</div>
+        <div class="text-xs text-red-400 mt-2 flex items-center gap-1">
+          <span>▼ 預設弱密碼無強硬 2FA</span>
+        </div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500">
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">高併發事務容錯 (SAGA)</div>
+        <div class="text-2xl font-black text-white mt-1">32 / 100</div>
+        <div class="text-xs text-amber-400 mt-2 flex items-center gap-1">
+          <span>▼ 依賴同步回調，易斷單掉額</span>
+        </div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-500">
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">反套利風控延遲</div>
+        <div class="text-2xl font-black text-white mt-1">&gt; 15 Mins</div>
+        <div class="text-xs text-purple-400 mt-2 flex items-center gap-1">
+          <span>▼ 人工事後稽核，非即時特徵比對</span>
+        </div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border-l-4 border-l-rose-500">
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">本地金流死淘依賴度</div>
+        <div class="text-2xl font-black text-white mt-1">94% 極高</div>
+        <div class="text-xs text-rose-400 mt-2 flex items-center gap-1">
+          <span>▼ PromptPay / 銀行卡高頻凍結風險</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparative Radar & Matrix -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Radar Chart (5 Cols) -->
+      <div class="lg:col-span-5 glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+            多維度架構成熟度雷達對比
+          </h2>
+        </div>
+        <div class="relative h-[320px] flex items-center justify-center">
+          <canvas id="radarChart"></canvas>
+        </div>
+        <div class="flex justify-center gap-6 text-xs mt-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+            <span class="text-gray-300 font-medium">國際一線旗艦 (Bet365 / Stake)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="text-gray-300 font-medium">東南亞白標套版 (M9 體系)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vulnerability Breakdown Accordion (7 Cols) -->
+      <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-3">
+        <h2 class="text-lg font-bold text-white flex items-center justify-between mb-4">
+          <span class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            六大核心弱項互動診斷
+          </span>
+          <span class="text-xs font-normal text-gray-400">點擊展開詳細機制與攻擊/崩潰情境</span>
+        </h2>
+
+        <!-- Item 1 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln1')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">極高危</span>
+              <span class="text-sm font-bold text-gray-200">1. 帳戶安全體系脆弱與爆破風險</span>
+            </div>
+            <span id="vuln1-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln1-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>超管後台缺乏硬性綁定 TOTP / Google 2FA 機制，預設弱口令（如 admin/123456）遍布；未設計自適應登入環境防禦（如 IP/地理變更指紋阻斷）。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>易遭自動化字典撞庫或社交工程攻破；一旦後台失守，攻擊者具備手動調帳（增加額度）、竄改出金地址與一鍵下架遊戲的最高特權。</p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln2')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">高危</span>
+              <span class="text-sm font-bold text-gray-200">2. 金流通道單點故障與極高死淘率</span>
+            </div>
+            <span id="vuln2-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln2-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>重度依賴泰國本地少數三方 PromptPay 與私卡輪換通道，無多節點智能承兌清算與無縫備援機制。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>泰國央行或商業銀行高頻風控凍結商戶帳戶時，前台產生大面積「掉單（已扣款未到帳）」與出金嚴重積壓，導致玩家恐慌提現擠兌與運營中斷。</p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln3')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">高危</span>
+              <span class="text-sm font-bold text-gray-200">3. 單一錢包同步事務與斷單卡額風險</span>
+            </div>
+            <span id="vuln3-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln3-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>下注扣款（Debit）與結算（Credit）採用簡單 HTTP Webhook 同步等待，缺乏分散式事務（SAGA / Event-driven Queue）補償機制。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>高峰期（週五晚或熱門賽事）遊戲廠商（PG / SA）API 延遲或抖動時，極易出現「錢包餘額已扣但未進遊戲局」，或「中獎後派彩未即時結算回主帳戶」的客訴糾紛。</p>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln4')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">中危</span>
+              <span class="text-sm font-bold text-gray-200">4. 靜態事後風控與反套利滯後性</span>
+            </div>
+            <span id="vuln4-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln4-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>僅依賴提款時人工流水審核與同 IP 查詢，缺乏毫秒級串接行為特徵引擎（如跨平台真人對稱下注、卡免費旋轉 Feature-buy 刷水）。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>專業黑產羊毛黨利用高頻腳本批次領取首存紅利，快速對沖洗白離場，待人工提款審核察覺時已造成平台資產淨損失。</p>
+          </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln5')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">中危</span>
+              <span class="text-sm font-bold text-gray-200">5. 前端 SPA 代碼暴露與架構耦合</span>
+            </div>
+            <span id="vuln5-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln5-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>標準套版前端打包未經深度混淆，打包文件常暴露真實後台管理路徑、未發布測試 API 接口及內部代理規則變數。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>大幅降低滲透者刺探源站真實 IP 與直接繞過前端向 API 伺服器提交越權請求的難度。</p>
+          </div>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="rounded-xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+          <button onclick="toggleTab('vuln6')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-gray-800/50 transition">
+            <div class="flex items-center gap-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-gray-500/20 text-gray-300 border border-gray-500/30">低危/合規</span>
+              <span class="text-sm font-bold text-gray-200">6. 零合規標準與監管黑天鵝風險</span>
+            </div>
+            <span id="vuln6-arrow" class="text-gray-400 text-xs transform transition-transform">▼</span>
+          </button>
+          <div id="vuln6-content" class="hidden px-4 pb-4 pt-1 text-xs text-gray-400 space-y-2 border-t border-gray-800/50">
+            <p><strong class="text-gray-200">現狀缺陷：</strong>無 MGA / UKGC 牌照框架，缺乏負責任博彩限制（自限下注、強制冷靜期）與合規 KYC 鏈條。</p>
+            <p><strong class="text-red-400">潛在後果：</strong>資產流動完全處於地下灰產管道，易遭泰國網絡警察全面查封主機與通緝，生命週期短暫（平均僅 3~6 個月）。</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Agent Commission Simulation Interactive Tool -->
+    <div class="glass-card rounded-2xl p-6 border-t-2 border-t-indigo-500">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            多級代理分潤與淨毛利（NGR）實時精算模擬器
+          </h2>
+          <p class="text-xs text-gray-400 mt-0.5">模擬客損模式（RevShare）與洗碼差額模式（Delta Turnover）收益與穿透扣除</p>
+        </div>
+        <div class="flex bg-gray-900 p-1 rounded-xl border border-gray-800 text-xs">
+          <button id="btnModeRev" onclick="switchMode('rev')" class="px-4 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition">負盈利佔成 (RevShare)</button>
+          <button id="btnModeTurn" onclick="switchMode('turn')" class="px-4 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition">洗碼差額 (Turnover)</button>
+        </div>
+      </div>
+
+      <!-- Mode 1: RevShare View -->
+      <div id="viewRevShare" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Sliders -->
+        <div class="lg:col-span-6 space-y-4">
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-gray-300">玩家總客損毛利 (GGR, THB)</span>
+              <span id="txtGgr" class="text-indigo-400 font-bold">1,000,000</span>
+            </div>
+            <input id="sliderGgr" type="range" min="100000" max="5000000" step="50000" value="1000000" oninput="calcRevShare()" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-gray-300">首存與活動紅利支出 (Bonus %, 預設 15%)</span>
+              <span id="txtBonusRate" class="text-gray-400">15%</span>
+            </div>
+            <input id="sliderBonus" type="range" min="0" max="30" step="1" value="15" oninput="calcRevShare()" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-gray-300">遊戲 API 抽成比例 (Vendor Fee %, 預設 12%)</span>
+              <span id="txtVendorRate" class="text-gray-400">12%</span>
+            </div>
+            <input id="sliderVendor" type="range" min="8" max="18" step="1" value="12" oninput="calcRevShare()" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-gray-300">三方金流手續費率 (Payment Fee %, 預設 2.5%)</span>
+              <span id="txtPayRate" class="text-gray-400">2.5%</span>
+            </div>
+            <input id="sliderPay" type="range" min="1" max="5" step="0.5" value="2.5" oninput="calcRevShare()" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+          </div>
+        </div>
+
+        <!-- Calculated Summary Box -->
+        <div class="lg:col-span-6 bg-gray-900/80 border border-gray-800 rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">淨毛利 NGR 穿透試算結果</div>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">毛利潤 (GGR)</span>
+                <span id="resGgr" class="text-white font-semibold">1,000,000 THB</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">扣除紅利補貼 (Bonus)</span>
+                <span id="resBonus" class="text-red-400">- 150,000 THB</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">扣除廠商 API 成本 (Vendor Fee)</span>
+                <span id="resVendor" class="text-red-400">- 120,000 THB</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">扣除三方金流通道費 (Payment Fee)</span>
+                <span id="resPay" class="text-red-400">- 25,000 THB</span>
+              </div>
+              <div class="flex justify-between py-2 text-sm font-bold">
+                <span class="text-indigo-300">實際結算淨利 (NGR)</span>
+                <span id="resNgr" class="text-indigo-400">705,000 THB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+            <div>
+              <div class="text-[11px] text-gray-400">匹配代理分潤等級 (RevShare: 40%)</div>
+              <div class="text-lg font-black text-emerald-400" id="resComm">282,000 THB</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[11px] text-gray-400">平台淨留存獲利</div>
+              <div class="text-lg font-black text-white" id="resPlatform">423,000 THB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode 2: Turnover Delta View -->
+      <div id="viewTurnover" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-6 space-y-4">
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-gray-300">下線產生之總有效流水 (Turnover, THB)</span>
+              <span id="txtTurnover" class="text-emerald-400 font-bold">10,000,000</span>
+            </div>
+            <input id="sliderTurnover" type="range" min="1000000" max="50000000" step="500000" value="10000000" oninput="calcTurnover()" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+          </div>
+          <div class="p-3 bg-gray-900 rounded-xl text-xs text-gray-400 space-y-1 border border-gray-800">
+            <div class="text-gray-300 font-semibold mb-1">三級代理洗碼比例配置：</div>
+            <div class="flex justify-between"><span>總代理 (Master Agent):</span><span class="text-white">1.2%</span></div>
+            <div class="flex justify-between"><span>一級代理 (Agent A):</span><span class="text-white">0.9% (差額 0.3%)</span></div>
+            <div class="flex justify-between"><span>二級代理 (Sub-Agent B):</span><span class="text-white">0.7% (差額 0.2%)</span></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 bg-gray-900/80 border border-gray-800 rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">各層級分潤分配試算 (Delta Breakdown)</div>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">二級代理 B 佣金 (直屬玩家 0.7%)</span>
+                <span id="turnAgentB" class="text-emerald-400 font-semibold">70,000 THB</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">一級代理 A 差額佣金 (0.9% - 0.7% = 0.2%)</span>
+                <span id="turnAgentA" class="text-blue-400 font-semibold">20,000 THB</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-gray-800">
+                <span class="text-gray-400">總代理 Master 差額佣金 (1.2% - 0.9% = 0.3%)</span>
+                <span id="turnMaster" class="text-indigo-400 font-semibold">30,000 THB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+            <div>
+              <div class="text-[11px] text-gray-400">全鏈路總返水支出 (1.2%)</div>
+              <div class="text-lg font-black text-white" id="turnTotal">120,000 THB</div>
+            </div>
+            <div class="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+              ✓ 無穿倉爆發風險 (固定閉環)
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Final Takeaway Table -->
+    <div class="glass-card rounded-2xl p-6 overflow-x-auto">
+      <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">系統代際關鍵架構差異矩陣</h3>
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800 text-gray-400">
+            <th class="py-3 px-4">架構模組</th>
+            <th class="py-3 px-4 text-blue-400">國際一線旗艦 (Tier-1 Giants)</th>
+            <th class="py-3 px-4 text-red-400">東南亞白標 (M9 / KOOBET 體系)</th>
+            <th class="py-3 px-4">穩健營運關鍵優化點</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800 text-gray-300">
+          <tr>
+            <td class="py-3 px-4 font-semibold text-white">錢包架構</td>
+            <td class="py-3 px-4">事件驅動微服務 + SAGA 分散式鎖定</td>
+            <td class="py-3 px-4">單一 HTTP Webhook 同步阻塞呼叫</td>
+            <td class="py-3 px-4 text-red-400">並發斷網時容易漏單、卡錢</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-semibold text-white">金流調度</td>
+            <td class="py-3 px-4">全球多幣種多通道智能即時路由</td>
+            <td class="py-3 px-4">單一依賴本地 PromptPay / 人工轉帳</td>
+            <td class="py-3 px-4 text-red-400">銀行凍結商戶即全站癱瘓</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-semibold text-white">風控反套利</td>
+            <td class="py-3 px-4">實時行為指紋 (ML/AI) 毫秒級對稱防禦</td>
+            <td class="py-3 px-4">提款人工審核、同 IP / 銀行卡靜態過濾</td>
+            <td class="py-3 px-4 text-red-400">無法阻擋跨平台群控對沖刷水</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-semibold text-white">身分驗證</td>
+            <td class="py-3 px-4">強制 TOTP / WebAuthn / 自適應風控</td>
+            <td class="py-3 px-4">無強制 2FA，預設密碼普遍脆弱</td>
+            <td class="py-3 px-4 text-red-400">超管遭撞庫爆破即被奪權</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    // Tab Toggle logic
+    function toggleTab(id) {
+      const content = document.getElementById(id + '-content');
+      const arrow = document.getElementById(id + '-arrow');
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // Radar Chart initialization
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['身分安全(2FA)', '事務高並發', '金流容災性', '實時反套利', '前端防護', '合規與監管'],
+        datasets: [{
+          label: '國際一線旗艦',
+          data: [95, 92, 96, 90, 88, 98],
+          fill: true,
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          borderColor: 'rgb(59, 130, 246)',
+          pointBackgroundColor: 'rgb(59, 130, 246)',
+          borderWidth: 2
+        }, {
+          label: '東南亞白標',
+          data: [18, 35, 20, 25, 30, 10],
+          fill: true,
+          backgroundColor: 'rgba(239, 68, 68, 0.2)',
+          borderColor: 'rgb(239, 68, 68)',
+          pointBackgroundColor: 'rgb(239, 68, 68)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+            pointLabels: { color: '#94A3B8', font: { size: 11, weight: 'bold' } },
+            ticks: { display: false, max: 100, min: 0 }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Calculator Switch Mode
+    function switchMode(mode) {
+      const btnRev = document.getElementById('btnModeRev');
+      const btnTurn = document.getElementById('btnModeTurn');
+      const viewRev = document.getElementById('viewRevShare');
+      const viewTurn = document.getElementById('viewTurnover');
+
+      if (mode === 'rev') {
+        btnRev.className = "px-4 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition";
+        btnTurn.className = "px-4 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
+        viewRev.classList.remove('hidden');
+        viewTurn.classList.add('hidden');
+      } else {
+        btnTurn.className = "px-4 py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition";
+        btnRev.className = "px-4 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold transition";
+        viewTurn.classList.remove('hidden');
+        viewRev.classList.add('hidden');
+      }
+    }
+
+    // RevShare Math
+    function calcRevShare() {
+      const ggr = parseFloat(document.getElementById('sliderGgr').value);
+      const bonusRate = parseFloat(document.getElementById('sliderBonus').value) / 100;
+      const vendorRate = parseFloat(document.getElementById('sliderVendor').value) / 100;
+      const payRate = parseFloat(document.getElementById('sliderPay').value) / 100;
+
+      document.getElementById('txtGgr').innerText = ggr.toLocaleString();
+      document.getElementById('txtBonusRate').innerText = (bonusRate * 100).toFixed(0) + '%';
+      document.getElementById('txtVendorRate').innerText = (vendorRate * 100).toFixed(0) + '%';
+      document.getElementById('txtPayRate').innerText = (payRate * 100).toFixed(1) + '%';
+
+      const bonusCost = ggr * bonusRate;
+      const vendorCost = ggr * vendorRate;
+      const payCost = ggr * payRate;
+      const ngr = ggr - bonusCost - vendorCost - payCost;
+
+      const commRate = 0.40; // Tier 3 sample (40%)
+      const agentComm = Math.max(0, ngr * commRate);
+      const platformProfit = ngr - agentComm;
+
+      document.getElementById('resGgr').innerText = ggr.toLocaleString() + ' THB';
+      document.getElementById('resBonus').innerText = '- ' + bonusCost.toLocaleString() + ' THB';
+      document.getElementById('resVendor').innerText = '- ' + vendorCost.toLocaleString() + ' THB';
+      document.getElementById('resPay').innerText = '- ' + payCost.toLocaleString() + ' THB';
+      document.getElementById('resNgr').innerText = ngr.toLocaleString() + ' THB';
+      document.getElementById('resComm').innerText = agentComm.toLocaleString() + ' THB';
+      document.getElementById('resPlatform').innerText = platformProfit.toLocaleString() + ' THB';
+    }
+
+    // Turnover Math
+    function calcTurnover() {
+      const turnover = parseFloat(document.getElementById('sliderTurnover').value);
+      document.getElementById('txtTurnover').innerText = turnover.toLocaleString();
+
+      const bComm = turnover * 0.007; // 0.7%
+      const aComm = turnover * (0.009 - 0.007); // 0.2%
+      const masterComm = turnover * (0.012 - 0.009); // 0.3%
+      const total = turnover * 0.012;
+
+      document.getElementById('turnAgentB').innerText = bComm.toLocaleString() + ' THB';
+      document.getElementById('turnAgentA').innerText = aComm.toLocaleString() + ' THB';
+      document.getElementById('turnMaster').innerText = masterComm.toLocaleString() + ' THB';
+      document.getElementById('turnTotal').innerText = total.toLocaleString() + ' THB';
+    }
+
+    // Initial run
+    calcRevShare();
+    calcTurnover();
+  </script>
+</body>
+</html>
